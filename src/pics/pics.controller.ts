@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
 import { PublishPicDto } from './dto/publish-pic.dto';
 import { PicsService } from './pics.service';
@@ -21,8 +22,12 @@ export class PicsController {
   }
 
   @Get()
-  getAllPics(): Pic[] {
-    return this.picsService.getAllPics();
+  getPics(@Query('search') search: string): Pic[] {
+    if (search) {
+      return this.picsService.getPicsWithFilters(search);
+    } else {
+      return this.picsService.getAllPics();
+    }
   }
 
   @Get(':id')
@@ -30,12 +35,9 @@ export class PicsController {
     return this.picsService.getPicByID(id);
   }
 
-  @Patch(':id/description')
-  updatePicDescription(
-    @Param('id') id: string,
-    @Body('description') description: string,
-  ) {
-    return this.picsService.updatePicDescription(id, description);
+  @Patch(':id/title')
+  updatePicTitle(@Param('id') id: string, @Body('title') title: string) {
+    return this.picsService.updatePicTitle(id, title);
   }
 
   @Delete(':id')

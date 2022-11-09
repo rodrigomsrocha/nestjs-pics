@@ -7,10 +7,11 @@ import { Pic } from './task.model';
 export class PicsService {
   private pics: Pic[] = [];
 
-  publishPic({ pic_url, description }: PublishPicDto): Pic {
+  publishPic({ pic_url, title, description }: PublishPicDto): Pic {
     const pic: Pic = {
       id: randomUUID(),
       pic_url,
+      title,
       description,
     };
     this.pics.push(pic);
@@ -22,13 +23,26 @@ export class PicsService {
     return this.pics;
   }
 
+  getPicsWithFilters(search: string): Pic[] {
+    let pics = this.getAllPics();
+
+    pics = pics.filter((pic) => {
+      if (pic.title.includes(search) || pic.description.includes(search)) {
+        return true;
+      }
+      return false;
+    });
+
+    return pics;
+  }
+
   getPicByID(id: string): Pic {
     return this.pics.find((pic) => pic.id === id);
   }
 
-  updatePicDescription(id: string, description: string): Pic {
+  updatePicTitle(id: string, title: string): Pic {
     const pic = this.getPicByID(id);
-    pic.description = description;
+    pic.title = title;
     return pic;
   }
 
