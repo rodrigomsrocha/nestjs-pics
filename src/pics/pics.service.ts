@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { randomUUID } from 'node:crypto';
+import { GetPicsFilterDto } from './dto/get-pics-filter.dto';
 import { PublishPicDto } from './dto/publish-pic.dto';
 import { Pic } from './task.model';
 
@@ -23,7 +24,7 @@ export class PicsService {
     return this.pics;
   }
 
-  getPicsWithFilters(search: string): Pic[] {
+  getPicsWithFilters({ search }: GetPicsFilterDto): Pic[] {
     let pics = this.getAllPics();
 
     pics = pics.filter((pic) => {
@@ -37,7 +38,13 @@ export class PicsService {
   }
 
   getPicByID(id: string): Pic {
-    return this.pics.find((pic) => pic.id === id);
+    const found_pic = this.pics.find((pic) => pic.id === id);
+
+    if (!found_pic) {
+      throw new NotFoundException(`Pic with id "${id}" not found`);
+    }
+
+    return found_pic;
   }
 
   updatePicTitle(id: string, title: string): Pic {
@@ -47,6 +54,7 @@ export class PicsService {
   }
 
   deletePic(id: string): void {
-    this.pics = this.pics.filter((pic) => pic.id !== id);
+    const found_pic = this.getPicByID(id);
+    this.pics = this.pics.filter((pic) => pic.id !== found_pic.id);
   }
 }

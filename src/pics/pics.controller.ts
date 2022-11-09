@@ -8,6 +8,7 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
+import { GetPicsFilterDto } from './dto/get-pics-filter.dto';
 import { PublishPicDto } from './dto/publish-pic.dto';
 import { PicsService } from './pics.service';
 import { Pic } from './task.model';
@@ -22,9 +23,9 @@ export class PicsController {
   }
 
   @Get()
-  getPics(@Query('search') search: string): Pic[] {
-    if (search) {
-      return this.picsService.getPicsWithFilters(search);
+  getPics(@Query() filterDto: GetPicsFilterDto): Pic[] {
+    if (Object.keys(filterDto).length) {
+      return this.picsService.getPicsWithFilters(filterDto);
     } else {
       return this.picsService.getAllPics();
     }
