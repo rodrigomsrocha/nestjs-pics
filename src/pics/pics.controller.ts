@@ -8,22 +8,22 @@ import {
   Post,
   Query,
 } from '@nestjs/common';
+import { Pic as PicModel } from '@prisma/client';
 import { GetPicsFilterDto } from './dto/get-pics-filter.dto';
 import { PublishPicDto } from './dto/publish-pic.dto';
 import { PicsService } from './pics.service';
-import { Pic } from './task.model';
 
 @Controller('pics')
 export class PicsController {
   constructor(private picsService: PicsService) {}
 
   @Post()
-  publishPic(@Body() publishPicDto: PublishPicDto): Pic {
+  publishPic(@Body() publishPicDto: PublishPicDto): PicModel {
     return this.picsService.publishPic(publishPicDto);
   }
 
   @Get()
-  getPics(@Query() filterDto: GetPicsFilterDto): Pic[] {
+  getPics(@Query() filterDto: GetPicsFilterDto): PicModel[] {
     if (Object.keys(filterDto).length) {
       return this.picsService.getPicsWithFilters(filterDto);
     } else {
@@ -32,12 +32,15 @@ export class PicsController {
   }
 
   @Get(':id')
-  getPicById(@Param('id') id: string) {
+  getPicById(@Param('id') id: string): PicModel {
     return this.picsService.getPicByID(id);
   }
 
   @Patch(':id/title')
-  updatePicTitle(@Param('id') id: string, @Body('title') title: string) {
+  updatePicTitle(
+    @Param('id') id: string,
+    @Body('title') title: string,
+  ): PicModel {
     return this.picsService.updatePicTitle(id, title);
   }
 

@@ -1,15 +1,15 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
+import { Pic as PicModel } from '@prisma/client';
 import { randomUUID } from 'node:crypto';
 import { GetPicsFilterDto } from './dto/get-pics-filter.dto';
 import { PublishPicDto } from './dto/publish-pic.dto';
-import { Pic } from './task.model';
 
 @Injectable()
 export class PicsService {
-  private pics: Pic[] = [];
+  private pics: PicModel[] = [];
 
-  publishPic({ pic_url, title, description }: PublishPicDto): Pic {
-    const pic: Pic = {
+  publishPic({ pic_url, title, description }: PublishPicDto): PicModel {
+    const pic: PicModel = {
       id: randomUUID(),
       pic_url,
       title,
@@ -20,11 +20,11 @@ export class PicsService {
     return pic;
   }
 
-  getAllPics(): Pic[] {
+  getAllPics(): PicModel[] {
     return this.pics;
   }
 
-  getPicsWithFilters({ search }: GetPicsFilterDto): Pic[] {
+  getPicsWithFilters({ search }: GetPicsFilterDto): PicModel[] {
     let pics = this.getAllPics();
 
     pics = pics.filter((pic) => {
@@ -37,7 +37,7 @@ export class PicsService {
     return pics;
   }
 
-  getPicByID(id: string): Pic {
+  getPicByID(id: string): PicModel {
     const found_pic = this.pics.find((pic) => pic.id === id);
 
     if (!found_pic) {
@@ -47,7 +47,7 @@ export class PicsService {
     return found_pic;
   }
 
-  updatePicTitle(id: string, title: string): Pic {
+  updatePicTitle(id: string, title: string): PicModel {
     const pic = this.getPicByID(id);
     pic.title = title;
     return pic;
