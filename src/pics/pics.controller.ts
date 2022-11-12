@@ -1,15 +1,16 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import { Pic as PicModel } from '@prisma/client';
+import { PublishPicDto } from './dto/publish-pic.dto';
 import { PicsService } from './pics.service';
 
 @Controller('pics')
 export class PicsController {
   constructor(private picsService: PicsService) {}
 
-  // @Post()
-  // publishPic(@Body() publishPicDto: PublishPicDto): PicModel {
-  //   return this.picsService.publishPic(publishPicDto);
-  // }
+  @Post()
+  publishPic(@Body() publishPicDto: PublishPicDto): Promise<PicModel> {
+    return this.picsService.publishPic(publishPicDto);
+  }
 
   // @Get()
   // getPics(@Query() filterDto: GetPicsFilterDto): PicModel[] {

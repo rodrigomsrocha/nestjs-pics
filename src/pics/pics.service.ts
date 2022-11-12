@@ -1,10 +1,20 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { Pic as PicModel } from '@prisma/client';
 import { PrismaService } from 'src/prisma.service';
+import { PublishPicDto } from './dto/publish-pic.dto';
 
 @Injectable()
 export class PicsService {
   constructor(private prisma: PrismaService) {}
+  async publishPic(publishPicDto: PublishPicDto): Promise<PicModel> {
+    const pic = await this.prisma.pic.create({
+      data: {
+        ...publishPicDto,
+      },
+    });
+
+    return pic;
+  }
   // publishPic({ pic_url, title, description }: PublishPicDto): PicModel {
   //   const pic: PicModel = {
   //     id: randomUUID(),
@@ -15,6 +25,7 @@ export class PicsService {
   //   this.pics.push(pic);
   //   return pic;
   // }
+
   // getAllPics(): PicModel[] {
   //   return this.pics;
   // }
